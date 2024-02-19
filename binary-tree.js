@@ -85,45 +85,29 @@ class BinaryTree {
    * (i.e. are at the same level but have different parents. ) */
 
   areCousins(node1, node2) {
-    // if (!this.root) return 0
-    function node1depthHelper(node) {
-      console.log("in node1depthhelper, node is ", node)
-      // if ((node.right === node1 || node.right === node2) && (node.left === node1 || node.left === node2)) return false
-      if (node.left === node1 || node.right === node1) {
-        console.log("it's equal, node is ", node, "and node1 is ", node1)
+    if (!this.root) return false
+    let parentNode = null
+    function depthHelper(node, nodeToFind) {
+      parentNode = node
+      console.log("in depthHelper, node is ", node,
+        "and nodeToFind is ", nodeToFind)
+      if (node.left === nodeToFind || node.right === nodeToFind) {
+        console.log("it's equal, node is ", node,
+          " and nodeToFind is ", nodeToFind)
         return 1
       }
 
-      // else if (node.right && node.left) {
-      //   node1depthHelper(node.right) + 1
-      //   node1depthHelper(node.left) + 1
-      // }
-      // else {
-      if (node.left) return node1depthHelper(node.left) + 1
-      if (node.right) return node1depthHelper(node.right) + 1
-      // }
+      if (node.left) return depthHelper(node.left, nodeToFind) + 1
+      if (node.right) return depthHelper(node.right, nodeToFind) + 1
     }
-    function node2depthHelper(node) {
-      // if node.right === node1 or node2 and node.left === node1 or node2 return false
-      console.log("in node2depthHelper, node is ", node)
-      if (node.left === node2 || node.right === node2) {
-        console.log("it's equal, node is ", node, "and node2 is ", node2)
-        return 1
-      }
-      if (node.right && node.left) {
-        // return Math.max(maxDepthHelper(node.left), maxDepthHelper(node.right)) + 1
-        return Math.min(node2depthHelper(node.right), node2depthHelper(node.left)) + 1
-      }
-      // else {
-      if (node.left) return node2depthHelper(node.left) + 1
-      if (node.right) return node2depthHelper(node.right) + 1
-      // }
-    }
-    let count1 = node1depthHelper(this.root)
+
+    let count1 = depthHelper(this.root, node1)
+    let firstParent = parentNode
     console.log("count1 is ", count1)
-    let count2 = node2depthHelper(this.root)
+    let count2 = depthHelper(this.root, node2)
+    let secParent = parentNode
     console.log("count2 is ", count2)
-    return count1 === count2
+    return (count1 === count2 && firstParent !== secParent)
   }
 
   /** Further study!
