@@ -88,6 +88,7 @@ class BinaryTree {
     if (!this.root) return false
     let parentNode = null
     function depthHelper(node, nodeToFind) {
+
       parentNode = node
       console.log("in depthHelper, node is ", node,
         "and nodeToFind is ", nodeToFind)
@@ -96,17 +97,18 @@ class BinaryTree {
           " and nodeToFind is ", nodeToFind)
         return 1
       }
-
+      if (!node.right && !node.left) return 0
       if (node.left) return depthHelper(node.left, nodeToFind) + 1
-      if (node.right) return depthHelper(node.right, nodeToFind) + 1
     }
 
     let count1 = depthHelper(this.root, node1)
+    if (count1 === 0) depthHelper(this.root.right)
     let firstParent = parentNode
-    console.log("count1 is ", count1)
+    console.log("count1 is ", count1, "firstParent is ", firstParent)
     let count2 = depthHelper(this.root, node2)
+    if (count2 === 0) depthHelper(this.root.right)
     let secParent = parentNode
-    console.log("count2 is ", count2)
+    console.log("count2 is ", count2, "secParent is ", secParent)
     return (count1 === count2 && firstParent !== secParent)
   }
 
