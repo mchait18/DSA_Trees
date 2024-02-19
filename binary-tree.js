@@ -85,22 +85,93 @@ class BinaryTree {
    * (i.e. are at the same level but have different parents. ) */
 
   areCousins(node1, node2) {
+    // if (!this.root) return 0
+    function node1depthHelper(node) {
+      console.log("in node1depthhelper, node is ", node)
+      // if ((node.right === node1 || node.right === node2) && (node.left === node1 || node.left === node2)) return false
+      if (node.left === node1 || node.right === node1) {
+        console.log("it's equal, node is ", node, "and node1 is ", node1)
+        return 1
+      }
 
+      // else if (node.right && node.left) {
+      //   node1depthHelper(node.right) + 1
+      //   node1depthHelper(node.left) + 1
+      // }
+      // else {
+      if (node.left) return node1depthHelper(node.left) + 1
+      if (node.right) return node1depthHelper(node.right) + 1
+      // }
+    }
+    function node2depthHelper(node) {
+      // if node.right === node1 or node2 and node.left === node1 or node2 return false
+      console.log("in node2depthHelper, node is ", node)
+      if (node.left === node2 || node.right === node2) {
+        console.log("it's equal, node is ", node, "and node2 is ", node2)
+        return 1
+      }
+      if (node.right && node.left) {
+        // return Math.max(maxDepthHelper(node.left), maxDepthHelper(node.right)) + 1
+        return Math.min(node2depthHelper(node.right), node2depthHelper(node.left)) + 1
+      }
+      // else {
+      if (node.left) return node2depthHelper(node.left) + 1
+      if (node.right) return node2depthHelper(node.right) + 1
+      // }
+    }
+    let count1 = node1depthHelper(this.root)
+    console.log("count1 is ", count1)
+    let count2 = node2depthHelper(this.root)
+    console.log("count2 is ", count2)
+    return count1 === count2
   }
 
   /** Further study!
    * serialize(tree): serialize the BinaryTree object tree into a string. */
 
-  static serialize() {
+  static serialize(tree) {
+    if (!tree.root) return ""
+    let serializedarr = []
 
+    function serializeNode(node) {
+      node.left ? serializedarr.push(node.left.val) : serializedarr.push("null")
+      node.right ? serializedarr.push(node.right.val) : serializedarr.push("null")
+      if (node.left) serializeNode(node.left)
+      if (node.right) serializeNode(node.right)
+      return String(serializedarr)
+    }
+    serializedarr.push(tree.root.val)
+    return serializeNode(tree.root)
   }
 
   /** Further study!
    * deserialize(stringTree): deserialize stringTree into a BinaryTree object. */
 
-  static deserialize() {
+  static deserialize(str) {
+    if (str.length === 0) return null
+    let strArr = str.split(",")
+    let root = new BinaryTreeNode(Number(strArr.shift()))
+    let current = root
+    let val
+    while (strArr.length > 0) {
+      val = strArr.shift()
+      current.left = val === "null" ? null : new BinaryTreeNode(Number(val))
+      val = strArr.shift()
+      current.right = val === "null" ? null : new BinaryTreeNode(Number(val))
 
+      if (strArr.length > 0) {
+        let newCurrent = current.left
+        val = strArr.shift()
+        newCurrent.left = val === "null" ? null : new BinaryTreeNode(Number(val))
+        val = strArr.shift()
+        newCurrent.right = val === "null" ? null : new BinaryTreeNode(Number(val))
+        current = current.right
+      }
+    }
+    let myTree = new BinaryTree(root);
+    return myTree;
   }
+
 
   /** Further study!
    * lowestCommonAncestor(node1, node2): find the lowest common ancestor
